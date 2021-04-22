@@ -56,6 +56,16 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
     return circlesGroup;
 }
 
+// function to transition circle state labels
+function renderLabels(circleLabels, newXScale, chosenXAxis) {
+
+    circleLabels.transition()
+        .duration(1000)
+        .attr("x", d => newXScale(d[chosenXAxis]));
+
+    return circleLabels;
+}
+
 // function to update circles using new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
 
@@ -71,17 +81,17 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 
     var toolTip = d3.tip()
         .attr("class", "d3-tip")
-        .offset([-80, 60])
+        .offset([80, -60])
         .html(function(d) {
             return (`${d.poverty}<br>${label} ${d[chosenXAxis]}`);
         });
 
     circlesGroup.call(toolTip);
 
-    circlesGroup.on("mouseover", function (data) {
+    circlesGroup.on("mouseover", function(data) {
         toolTip.show(data);
     })
-        .on("mouseout", function (data, index) {
+        .on("mouseout", function(data, index) {
         toolTip.hide(data);
     });
 
@@ -89,11 +99,11 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 }
 
 // retrieve data from CSV file
-d3.csv("../assets/data/data.csv").then(function (censusData, err) {
+d3.csv("../assets/data/data.csv").then(function(censusData, err) {
     if (err) throw err;
 
     // parse data
-    censusData.forEach(function (data) {
+    censusData.forEach(function(data) {
         data.poverty = +data.poverty;
         data.age = +data.age;
         data.income = +data.income;
@@ -184,7 +194,7 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
 
     // x axis labels event listener
     labelsGroup.selectAll("text")
-        .on("click", function () {
+        .on("click", function() {
             // get value of selection
             var value = d3.select(this).attr("value");
             if (value !== chosenXAxis) {
@@ -200,6 +210,9 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
 
                 // update circles with new x values
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+                // update circle labels with new x values
+                circleLabels = renderLabels(circleLabels, xLinearScale, chosenXAxis);
 
                 // update tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
@@ -238,6 +251,6 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
                 }
             }
         });
-}).catch(function (error) {
+}).catch(function(error) {
     console.log(error);
 });
