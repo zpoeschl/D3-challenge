@@ -137,15 +137,9 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
     var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
 
     circleLabels
-        .attr("x", function(d) {
-        return xLinearScale(d[chosenXAxis]);
-        })
-        .attr("y", function(d) {
-        return yLinearScale(d.obesity);
-        })
-        .text(function(d) {
-        return d.abbr;
-        })
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d.obesity))
+        .text(d => d.abbr)
         .attr("font-family", "sans-serif")
         .attr("font-size", "10px")
         .attr("text-anchor", "middle")
@@ -204,7 +198,7 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
                 // update x axis with transition
                 xAxis = renderAxes(xLinearScale, xAxis);
 
-                // update cricles with new x values
+                // update circles with new x values
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
 
                 // update tooltips with new info
