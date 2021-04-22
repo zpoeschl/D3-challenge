@@ -62,16 +62,17 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     var label;
 
     if (chosenXAxis === "poverty") {
-        label = "In Poverty (%)"
-    }
-    else {
+        label = "In Poverty (%)";
+    } else if (chosenXAxis === "age") {
         label = "Age (Median)";
+    } else {
+        label = "Household Income (Median)";
     }
 
     var toolTip = d3.tip()
-        .attr("class", "tooltip")
-        .offset([80, -60])
-        .html(function (d) {
+        .attr("class", "d3-tip")
+        .offset([-80, 60])
+        .html(function(d) {
             return (`${d.poverty}<br>${label} ${d[chosenXAxis]}`);
         });
 
@@ -97,8 +98,6 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
         data.age = +data.age;
         data.income = +data.income;
         data.obesity = +data.obesity;
-        data.smokers = +data.smokes;
-        data.healthcare = +data.healthcare;
     });
 
     // xLinearScale function
@@ -130,9 +129,27 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
         .append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d.obesity))
-        .attr("r", 20)
+        .attr("r", 15)
         .attr("fill", "blue")
         .attr("opacity", ".45");
+    
+    // add state labels to circles
+    var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
+
+    circleLabels
+        .attr("x", function(d) {
+        return xLinearScale(d[chosenXAxis]);
+        })
+        .attr("y", function(d) {
+        return yLinearScale(d.obesity);
+        })
+        .text(function(d) {
+        return d.abbr;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "white");
 
     // create group for multiple x-axis labels
     var labelsGroup = chartGroup.append("g")
@@ -161,7 +178,7 @@ d3.csv("../assets/data/data.csv").then(function (censusData, err) {
 
     // append y axis
     chartGroup.append("text")
-        .attr("transform", "rotate(-90")
+        .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left)
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
