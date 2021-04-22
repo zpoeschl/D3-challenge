@@ -2,7 +2,7 @@ var svgWidth = 1000;
 var svgHeight = 600;
 
 var margin = {
-    top: 20,
+    top: 70,
     right: 40,
     bottom: 80,
     left: 100
@@ -12,7 +12,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // create SVG wrapper
-var svg = d3.select(".scatter")
+var svg = d3.select("#scatter")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
