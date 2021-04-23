@@ -89,7 +89,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     circlesGroup.call(toolTip);
 
     circlesGroup.on("mouseover", function(data) {
-        toolTip.show(data);
+        toolTip.show(data, this);
     })
         .on("mouseout", function(data, index) {
         toolTip.hide(data);
